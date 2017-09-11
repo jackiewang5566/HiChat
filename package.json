@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/jackiewang5566/HiChat/issues"
   },
-  "homepage": "https://github.com/jackiewang5566/HiChat#readme"
+  "homepage": "https://github.com/jackiewang5566/HiChat#readme",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
 }
