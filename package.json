@@ -1,0 +1,24 @@
+{
+  "name": "hichat",
+  "version": "1.0.0",
+  "description": "A chat application built with NodeJS and Socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jackiewang5566/HiChat.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "Socket.io",
+    "Chat"
+  ],
+  "author": "diwang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackiewang5566/HiChat/issues"
+  },
+  "homepage": "https://github.com/jackiewang5566/HiChat#readme"
+}
