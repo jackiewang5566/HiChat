@@ -1,4 +1,3 @@
-var button = document.getElementById('sendBtn');
 var express = require('express');
 var http = require('http');
 var socketIO = require('socket.io')
