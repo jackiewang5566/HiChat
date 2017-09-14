@@ -49,5 +49,15 @@ HiChat.prototype = {
 
             document.getElementById('messageInput').focus();
         });
+
+        this.socket.on('system', function (nickName, userCount, type) {
+            // check if user is going to connect or disconnect
+            var msg = nickName + (type == 'login' ? ' joined' : ' left');
+            var p = document.createElement('p');
+            p.textContent = msg;
+            document.getElementById('historyMsg').appendChild(p);
+            // show total # of people
+            document.getElementById('status').textContent = userCount + (userCount > 1 ? ' users' : ' user') + ' online';
+        });
     }
 }
