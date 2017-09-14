@@ -1,23 +1,28 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const path = require('path');
-
+var express = require('express');
+var app = express();
+var http = require('http');
+var path = require('path');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server)
+var users = [];
 
 app.use(express.static(path.join(__dirname, '/www')));
-// app.get('/', function (req, res) {
-//     res.sendFile('index.html', { root: path.join(__dirname, '/www') });
-// })
 
-
-var server = http.createServer(app);
 server.listen(80);
 
-var io = require('socket.io').listen(server)
+// socket part
 io.on('connection', function (socket) {
-    // socket.emit('news', { hello: 'world' });
-    socket.on('foo', function (data) {
-        console.log(data);
+    socket.on('login', function (nickname) {
+        if (users.indexOf(nickname) > -1) {
+            socket.emit('nickExisted');
+        } else {
+            socket.userIndex = users.length;
+            socket.nickname = nickname;
+            users.push(nickname);
+            socket.emit('loginSuccess');
+            // send nickname to all connected client
+            io.sockets.emit('system', nickname);
+        }
     });
 })
 
