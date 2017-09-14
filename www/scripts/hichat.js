@@ -50,6 +50,7 @@ HiChat.prototype = {
             document.getElementById('messageInput').focus();
         });
 
+        // add event listener for system event
         this.socket.on('system', function (nickName, userCount, type) {
             // check if user is going to connect or disconnect
             var msg = nickName + (type == 'login' ? ' joined' : ' left');
@@ -57,6 +58,26 @@ HiChat.prototype = {
             that._displayNewMsg('system', msg, 'red');
             // show total # of people
             document.getElementById('status').textContent = userCount + (userCount > 1 ? ' users' : ' user') + ' online';
+        });
+
+        // add event listener for click button
+        document.getElementById('sendBtn').addEventListener('click', function () {
+            var messageInput = document.getElementById('messageInput');
+            var msg = messageInput.value;
+            // clear previous message
+            messageInput.value = '';
+            messageInput.focus();
+            if (msg.trim().length !== 0) {
+                // send msg to server
+                that.socket.emit('postMsg', msg);
+                // show msg in chat panel
+                that._displayNewMsg('me', msg);
+            }
+        }, false);
+
+        // receive new msg on client side
+        this.socket.on('newMsg', function (user, msg) {
+            that._displayNewMsg(user, msg);
         });
     },
     _displayNewMsg: function (user, msg, color) {

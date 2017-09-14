@@ -32,7 +32,13 @@ io.on('connection', function (socket) {
         users.splice(socket.userIndex, 1);
         // notify everybody except the one just leaves
         socket.broadcast.emit('system', socket.nickname, users.length, 'logout');
-    })
-})
+    });
+
+    socket.on('postMsg', function (msg) {
+        // send msg to all users except myself
+        socket.broadcast.emit('newMsg', socket.nickname, msg);
+    });
+    
+});
 
 console.log('server started');
