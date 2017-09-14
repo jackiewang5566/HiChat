@@ -28,11 +28,26 @@ HiChat.prototype = {
             // check input field is empty or not
             if (nickName.trim().length != 0) {
                 // if it's not empty, trigger a login event and send nickname to server
-                that.socket.emit('login', nickname);
+                that.socket.emit('login', nickName);
             } else {
                 // if it's empty
                 document.getElementById('nicknameInput').focus();
             }
         }, false);
+
+        // add event listener for existed nick name
+        this.socket.on('nickExisted', function () {
+            document.getElementById('info').textContent = '!nickname is taken, please choose another one';
+        });
+
+        // add event listener for login success
+        this.socket.on('loginSuccess', function () {
+            var nickname = document.getElementById('nicknameInput').value;
+            document.title = 'hichat | ' + nickname;
+
+            document.getElementById('loginWrapper').style.display = 'none';
+
+            document.getElementById('messageInput').focus();
+        });
     }
 }
