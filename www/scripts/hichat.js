@@ -53,11 +53,19 @@ HiChat.prototype = {
         this.socket.on('system', function (nickName, userCount, type) {
             // check if user is going to connect or disconnect
             var msg = nickName + (type == 'login' ? ' joined' : ' left');
-            var p = document.createElement('p');
-            p.textContent = msg;
-            document.getElementById('historyMsg').appendChild(p);
+            // define default system msg color to red
+            that._displayNewMsg('system', msg, 'red');
             // show total # of people
             document.getElementById('status').textContent = userCount + (userCount > 1 ? ' users' : ' user') + ' online';
         });
+    },
+    _displayNewMsg: function (user, msg, color) {
+        var container = document.getElementById('historyMsg');
+        var msgToDisplay = document.createElement('p');
+        var date = new Date().toTimeString().substr(0, 8);
+        msgToDisplay.style.color = color || '#000';
+        msgToDisplay.innerHTML = user + '<span class="timespan">(' + date + '): </span>' + msg;
+        container.appendChild(msgToDisplay);
+        container.scrollTop = container.scrollHeight;
     }
 }
