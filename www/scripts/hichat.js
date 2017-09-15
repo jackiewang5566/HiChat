@@ -106,11 +106,42 @@ HiChat.prototype = {
         this.socket.on('newImg', function (user, img) {
             that._displayImage(user, img);
         });
+
+        // initilize emoji for each user
+        that._initialEmoji();
+        // add event listener for emoji click, open emoji window
+        document.getElementById('emoji').addEventListener('click', function (e) {
+            var emojiwrapper = document.getElementById('emojiWrapper');
+            emojiwrapper.style.display = 'block';
+            e.stopPropagation();
+        }, false);
+        // add event listener for closing the emoji window
+        document.body.addEventListener('click', function (e) {
+            var emojiwrapper = document.getElementById('emojiWrapper');
+            if (e.target !== emojiwrapper) {
+                emojiwrapper.style.display = 'none';
+            }
+        });
+
+        // pass specific selected emoji to user's typed msg
+        document.getElementById('emojiWrapper').addEventListener('click', function (e) {
+            // get selected emoji and added to msg panel
+            var target = e.target;
+            if (target.nodeName.toLowerCase() === 'img') {
+                var messageInput = document.getElementById('messageInput');
+                messageInput.focus();
+                messageInput.value = messageInput.value + '[emoji:' + target.title + ']';
+            }
+        }, false);
     },
     _displayNewMsg: function (user, msg, color) {
         var container = document.getElementById('historyMsg');
         var msgToDisplay = document.createElement('p');
         var date = new Date().toTimeString().substr(0, 8);
+        
+        // convert emoji string in message to picture emoji
+        msg = this._showEmoji(msg);
+
         msgToDisplay.style.color = color || '#000';
         msgToDisplay.innerHTML = user + '<span class="timespan">(' + date + '): </span>' + msg;
         container.appendChild(msgToDisplay);
@@ -127,5 +158,32 @@ HiChat.prototype = {
                                 imgData + '"/></a>';
         container.appendChild(msgToDisplay);
         container.scrollTop = container.scrollHeight;
+    },
+    _initialEmoji: function () {
+        var emojiContainer = document.getElementById('emojiWrapper');
+        var docFragment = document.createDocumentFragment();
+        for (var i = 69; i > 0; i--) {
+            var emojiItem = document.createElement('img');
+            emojiItem.src = '../content/emoji/' + i + '.gif';
+            emojiItem.title = i;
+            docFragment.appendChild(emojiItem);
+        }
+        emojiContainer.appendChild(docFragment);
+    },
+    _showEmoji: function (msg) {
+        var match, result = msg;
+        var reg = /\[emoji:\d+\]/g;
+        var emojiIndex;
+        var totalEmojiNum = document.getElementById('emojiWrapper').children.length;
+        // The exec() method executes a search for a match in a specified string, returns a result array or null. 
+        while (match = reg.exec(msg)) {
+            emojiIndex = match[0].slice(7, -1);
+            if (emojiIndex > totalEmojiNum) {
+                result = result.replace(match[0], '[X]');
+            } else {
+                result = result.replace(match[0], '<img class="emoji" src="../content/emoji/' + emojiIndex + '.gif" />');
+            }
+        }
+        return result;
     }
 }
