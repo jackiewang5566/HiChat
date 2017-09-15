@@ -39,6 +39,10 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('newMsg', socket.nickname, msg);
     });
     
+    socket.on('img', function (imgData) {
+        // receive image from users
+        socket.broadcast.emit('newImg', socket.nickname, imgData);
+    });
 });
 
 console.log('server started');
