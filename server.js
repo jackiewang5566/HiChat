@@ -34,14 +34,14 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('system', socket.nickname, users.length, 'logout');
     });
 
-    socket.on('postMsg', function (msg) {
+    socket.on('postMsg', function (msg, color) {
         // send msg to all users except myself
-        socket.broadcast.emit('newMsg', socket.nickname, msg);
+        socket.broadcast.emit('newMsg', socket.nickname, msg, color);
     });
     
-    socket.on('img', function (imgData) {
+    socket.on('img', function (imgData, color) {
         // receive image from users
-        socket.broadcast.emit('newImg', socket.nickname, imgData);
+        socket.broadcast.emit('newImg', socket.nickname, imgData, color);
     });
 });
 

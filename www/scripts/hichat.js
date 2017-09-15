@@ -64,20 +64,22 @@ HiChat.prototype = {
         document.getElementById('sendBtn').addEventListener('click', function () {
             var messageInput = document.getElementById('messageInput');
             var msg = messageInput.value;
+            // get color
+            var color = document.getElementById('colorStyle').value;
             // clear previous message
             messageInput.value = '';
             messageInput.focus();
             if (msg.trim().length !== 0) {
                 // send msg to server
-                that.socket.emit('postMsg', msg);
+                that.socket.emit('postMsg', msg, color);
                 // show msg in chat panel
-                that._displayNewMsg('me', msg);
+                that._displayNewMsg('me', msg, color);
             }
         }, false);
 
         // receive new msg on client side
-        this.socket.on('newMsg', function (user, msg) {
-            that._displayNewMsg(user, msg);
+        this.socket.on('newMsg', function (user, msg, color) {
+            that._displayNewMsg(user, msg, color);
         });
 
         // add event listener for send image
@@ -95,16 +97,18 @@ HiChat.prototype = {
                 reader.onload = function (e) {
                     // if reading successfully, render it on page and send it to server
                     this.value = '';
-                    that._displayImage('me', e.target.result);
-                    that.socket.emit('img', e.target.result);
+                    // get color
+                    var color = document.getElementById('colorStyle').value;
+                    that._displayImage('me', e.target.result, color);
+                    that.socket.emit('img', e.target.result, color);
                 };
                 reader.readAsDataURL(file);
             }
         }, false);
 
         // receive user sent image from server and show it on other users chat panel
-        this.socket.on('newImg', function (user, img) {
-            that._displayImage(user, img);
+        this.socket.on('newImg', function (user, img, color) {
+            that._displayImage(user, img, color);
         });
 
         // initilize emoji for each user
@@ -138,7 +142,7 @@ HiChat.prototype = {
         var container = document.getElementById('historyMsg');
         var msgToDisplay = document.createElement('p');
         var date = new Date().toTimeString().substr(0, 8);
-        
+
         // convert emoji string in message to picture emoji
         msg = this._showEmoji(msg);
 
